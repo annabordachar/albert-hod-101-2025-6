@@ -17,10 +17,12 @@ before testing create a venv or direct in your PATH :
 For the web crawler it need to be call on : 
 
 pwd : **albert-hod-101-2025-6/Pasing_exercices**
+
 command : **python Crawler/main.py**
 
 
 For the email parser : 
 
 pwd : **albert-hod-101-2025-6/Pasing_exercices**
+
 command : **python Crawler/main.py**
