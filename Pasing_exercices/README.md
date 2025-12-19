@@ -25,4 +25,4 @@ For the email parser :
 
 pwd : **albert-hod-101-2025-6/Pasing_exercices**
 
-command : **python Crawler/main.py**
+command : **python Email_Parsing/main.py**
