@@ -1,4 +1,4 @@
-/* Pour changer le seuil : remplacer tous les 3 par 20 (3 occurrences) */
+/* Pour changer le seuil : remplacer tous les 3 par 20 dans le dernier bloc de code avant le 'THEN' */
 
 CREATE OR REPLACE TABLE `group_6.enriched_synthetic_deliveroo_plus_dataset` AS
 
