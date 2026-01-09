@@ -4,7 +4,7 @@
 ### Team member : Alexandro Bizeul / Anna Bordachar / Santiago Pastran
 
 
-#### **Parsing Exercices**
+### **Parsing Exercices**
 
 For the package, there is a requirements.txt file that containe all used library
 
@@ -26,7 +26,7 @@ pwd : **albert-hod-101-2025-6/Pasing_exercices**
 command : **python Crawler/main.py**
 
 
-#### **Slack Bot Exercices**
+### **Slack Bot Exercices**
 
 All used library are basic we assume you have all required packages.
 
