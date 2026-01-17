@@ -4,7 +4,7 @@
 ### Team member : Alexandro Bizeul / Anna Bordachar / Santiago Pastran
 
 
-**Parsing Exercices**
+### **Parsing Exercices**
 
 For the package, there is a requirements.txt file that containe all used library
 
@@ -27,6 +27,3 @@ command : **python Crawler/main.py**
 
 
 
-For the NLP project : 
-
-Just run the notebook 'tf-idf.ipynb' in the file NLP Project 
