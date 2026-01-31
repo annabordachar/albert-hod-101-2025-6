@@ -1,0 +1,19 @@
+streamlit>=1.31.0
+
+# OpenAI
+openai>=1.12.0
+
+# Vector DB
+chromadb>=1.4.0
+
+# Embeddings / tokenization
+tiktoken>=0.6.0
+
+# HTML parsing
+beautifulsoup4>=4.12.0
+
+# Env variables
+python-dotenv>=1.0.0
+
+# Utils
+numpy>=1.26.0
