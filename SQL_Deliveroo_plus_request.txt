@@ -1,0 +1,83 @@
+-- Threshold for subscription detection
+DECLARE threshold INT64 DEFAULT 3;
+
+CREATE OR REPLACE TABLE `head-of-data-1.group_6.enriched_synthetic_deliveroo_plus_dataset` AS
+
+WITH ordered AS (
+  SELECT
+    id_customer_synth,
+    order_datetime_synth,
+    is_free_delivery,
+    
+    -- Numéro de ligne global par client
+    ROW_NUMBER() OVER (
+      PARTITION BY id_customer_synth
+      ORDER BY order_datetime_synth
+    ) AS rn_global,
+
+    -- Numéro de ligne dans le groupe free / non free
+    ROW_NUMBER() OVER (
+      PARTITION BY id_customer_synth,
+                   CASE WHEN is_free_delivery = 1 THEN 1 ELSE 0 END
+      ORDER BY order_datetime_synth
+    ) AS rn_free
+
+  FROM `head-of-data-1.group_6.synthetic_deliveroo_plus_dataset`
+),
+
+-- Détection des séquences gratuites consécutives
+free_sequences AS (
+  SELECT
+    *,
+    (rn_global - rn_free) AS grp  -- technique islands & gaps
+  FROM ordered
+  WHERE is_free_delivery = 1
+),
+
+-- Taille + bornes temporelles de chaque séquence
+seq_info AS (
+  SELECT
+    id_customer_synth,
+    grp,
+    COUNT(*) AS seq_length,
+    MIN(order_datetime_synth) AS seq_start,
+    MAX(order_datetime_synth) AS seq_end
+  FROM free_sequences
+  GROUP BY id_customer_synth, grp
+),
+
+-- Garder uniquement les séquences valides (≥ threshold)
+valid_subscriptions AS (
+  SELECT
+    id_customer_synth,
+    seq_start,
+    seq_end
+  FROM seq_info
+  WHERE seq_length >= threshold
+)
+
+-- Final tagging : enrichissement des commandes
+SELECT
+  o.id_customer_synth,
+  o.order_datetime_synth,
+  o.is_free_delivery,
+
+  -- 1 si la commande tombe dans une période d'abonnement
+  CASE
+    WHEN v.id_customer_synth IS NOT NULL
+         AND o.order_datetime_synth BETWEEN v.seq_start AND v.seq_end
+    THEN 1 ELSE 0
+  END AS is_order_made_during_subscription,
+
+  -- Début de l'abonnement courant (ou NULL)
+  v.seq_start AS current_subscription_start_datetime,
+
+  -- Fin de l'abonnement courant (ou NULL)
+  v.seq_end AS current_subscription_end_datetime
+
+FROM ordered o
+LEFT JOIN valid_subscriptions v
+  ON o.id_customer_synth = v.id_customer_synth
+ AND o.order_datetime_synth BETWEEN v.seq_start AND v.seq_end
+
+ORDER BY id_customer_synth, order_datetime_synth;
